@@ -45,10 +45,9 @@ def generate_systemverilog(data, pipeline_hex, data_type, width, module_name):
     n = data['N']
     nw = data['nw']
     d = data['D']
+    is_symmetric = data.get('symmetric', False)
     stages = group_comparisons(nw, d)
-    #print(f"Stages: {stages}")
-    #debug print(f"Number of stages: {len(stages)+1}")
-    #d = len(stages)
+    
     if len(nw) != data['L']:
         raise ValueError("Number of pairs in 'nw' does not match 'L'")
     for pair in nw:
@@ -80,7 +79,6 @@ def generate_systemverilog(data, pipeline_hex, data_type, width, module_name):
     # Declare intermediate signals
     for i in range(d):
         for j in range(n):
-            # signal_type = "reg" if pipeline[i] else "wire"
             signal_type = ""
             code.append(f"    {signal_type} {data_t} stage_{i}_out_{j};")
 
@@ -88,29 +86,52 @@ def generate_systemverilog(data, pipeline_hex, data_type, width, module_name):
     for i in range(d):
         inputs = [f"data_{j}" if i == 0 else f"stage_{i-1}_out_{j}" for j in range(n)]
         outputs = [f"stage_{i}_out_{j}" for j in range(n)]
-        if pipeline[i]:
-            code.append(f"    always_ff @(posedge clk) begin")
-            for a, b in stages[i]:
-                code.append(f"        if ({inputs[a]} <= {inputs[b]}) begin")
-                code.append(f"            {outputs[a]} <= {inputs[a]};")
-                code.append(f"            {outputs[b]} <= {inputs[b]};")
-                code.append(f"        end else begin")
-                code.append(f"            {outputs[a]} <= {inputs[b]};")
-                code.append(f"            {outputs[b]} <= {inputs[a]};")
-                code.append(f"        end")
-            compared = set(a for pair in stages[i] for a in pair)
-            for k in range(n):
-                if k not in compared:
-                    code.append(f"        {outputs[k]} <= {inputs[k]};")
-            code.append("    end")
+        
+        if is_symmetric and i >= d//2:
+            # For symmetric networks, mirror the first half stages
+            mirror_stage = d - 1 - i
+            for a, b in stages[mirror_stage]:
+                # Mirror the indices for the second half
+                a_mirror = n - 1 - a
+                b_mirror = n - 1 - b
+                if pipeline[i]:
+                    code.append(f"    always_ff @(posedge clk) begin")
+                    code.append(f"        if ({inputs[a_mirror]} <= {inputs[b_mirror]}) begin")
+                    code.append(f"            {outputs[a_mirror]} <= {inputs[a_mirror]};")
+                    code.append(f"            {outputs[b_mirror]} <= {inputs[b_mirror]};")
+                    code.append(f"        end else begin")
+                    code.append(f"            {outputs[a_mirror]} <= {inputs[b_mirror]};")
+                    code.append(f"            {outputs[b_mirror]} <= {inputs[a_mirror]};")
+                    code.append(f"        end")
+                    code.append("    end")
+                else:
+                    code.append(f"    assign {outputs[a_mirror]} = ({inputs[a_mirror]} <= {inputs[b_mirror]}) ? {inputs[a_mirror]} : {inputs[b_mirror]};")
+                    code.append(f"    assign {outputs[b_mirror]} = ({inputs[a_mirror]} <= {inputs[b_mirror]}) ? {inputs[b_mirror]} : {inputs[a_mirror]};")
         else:
-            for a, b in stages[i]:
-                code.append(f"    assign {outputs[a]} = ({inputs[a]} <= {inputs[b]}) ? {inputs[a]} : {inputs[b]};")
-                code.append(f"    assign {outputs[b]} = ({inputs[a]} <= {inputs[b]}) ? {inputs[b]} : {inputs[a]};")
-            compared = set(a for pair in stages[i] for a in pair)
-            for k in range(n):
-                if k not in compared:
-                    code.append(f"    assign {outputs[k]} = {inputs[k]};")
+            # Original stage generation
+            if pipeline[i]:
+                code.append(f"    always_ff @(posedge clk) begin")
+                for a, b in stages[i]:
+                    code.append(f"        if ({inputs[a]} <= {inputs[b]}) begin")
+                    code.append(f"            {outputs[a]} <= {inputs[a]};")
+                    code.append(f"            {outputs[b]} <= {inputs[b]};")
+                    code.append(f"        end else begin")
+                    code.append(f"            {outputs[a]} <= {inputs[b]};")
+                    code.append(f"            {outputs[b]} <= {inputs[a]};")
+                    code.append(f"        end")
+                compared = set(a for pair in stages[i] for a in pair)
+                for k in range(n):
+                    if k not in compared:
+                        code.append(f"        {outputs[k]} <= {inputs[k]};")
+                code.append("    end")
+            else:
+                for a, b in stages[i]:
+                    code.append(f"    assign {outputs[a]} = ({inputs[a]} <= {inputs[b]}) ? {inputs[a]} : {inputs[b]};")
+                    code.append(f"    assign {outputs[b]} = ({inputs[a]} <= {inputs[b]}) ? {inputs[b]} : {inputs[a]};")
+                compared = set(a for pair in stages[i] for a in pair)
+                for k in range(n):
+                    if k not in compared:
+                        code.append(f"    assign {outputs[k]} = {inputs[k]};")
 
     # Connect final stage to outputs
     for j in range(n):

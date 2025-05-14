@@ -1,0 +1,450 @@
+typedef logic [31:0] data_t;
+
+module sort_10_29_8 (
+    input logic clk,
+    input data_t data_0,
+    input data_t data_1,
+    input data_t data_2,
+    input data_t data_3,
+    input data_t data_4,
+    input data_t data_5,
+    input data_t data_6,
+    input data_t data_7,
+    input data_t data_8,
+    input data_t data_9,
+    output data_t sort_0,
+    output data_t sort_1,
+    output data_t sort_2,
+    output data_t sort_3,
+    output data_t sort_4,
+    output data_t sort_5,
+    output data_t sort_6,
+    output data_t sort_7,
+    output data_t sort_8,
+    output data_t sort_9
+);
+
+     logic [31:0] stage_0_out_0;
+     logic [31:0] stage_0_out_1;
+     logic [31:0] stage_0_out_2;
+     logic [31:0] stage_0_out_3;
+     logic [31:0] stage_0_out_4;
+     logic [31:0] stage_0_out_5;
+     logic [31:0] stage_0_out_6;
+     logic [31:0] stage_0_out_7;
+     logic [31:0] stage_0_out_8;
+     logic [31:0] stage_0_out_9;
+     logic [31:0] stage_1_out_0;
+     logic [31:0] stage_1_out_1;
+     logic [31:0] stage_1_out_2;
+     logic [31:0] stage_1_out_3;
+     logic [31:0] stage_1_out_4;
+     logic [31:0] stage_1_out_5;
+     logic [31:0] stage_1_out_6;
+     logic [31:0] stage_1_out_7;
+     logic [31:0] stage_1_out_8;
+     logic [31:0] stage_1_out_9;
+     logic [31:0] stage_2_out_0;
+     logic [31:0] stage_2_out_1;
+     logic [31:0] stage_2_out_2;
+     logic [31:0] stage_2_out_3;
+     logic [31:0] stage_2_out_4;
+     logic [31:0] stage_2_out_5;
+     logic [31:0] stage_2_out_6;
+     logic [31:0] stage_2_out_7;
+     logic [31:0] stage_2_out_8;
+     logic [31:0] stage_2_out_9;
+     logic [31:0] stage_3_out_0;
+     logic [31:0] stage_3_out_1;
+     logic [31:0] stage_3_out_2;
+     logic [31:0] stage_3_out_3;
+     logic [31:0] stage_3_out_4;
+     logic [31:0] stage_3_out_5;
+     logic [31:0] stage_3_out_6;
+     logic [31:0] stage_3_out_7;
+     logic [31:0] stage_3_out_8;
+     logic [31:0] stage_3_out_9;
+     logic [31:0] stage_4_out_0;
+     logic [31:0] stage_4_out_1;
+     logic [31:0] stage_4_out_2;
+     logic [31:0] stage_4_out_3;
+     logic [31:0] stage_4_out_4;
+     logic [31:0] stage_4_out_5;
+     logic [31:0] stage_4_out_6;
+     logic [31:0] stage_4_out_7;
+     logic [31:0] stage_4_out_8;
+     logic [31:0] stage_4_out_9;
+     logic [31:0] stage_5_out_0;
+     logic [31:0] stage_5_out_1;
+     logic [31:0] stage_5_out_2;
+     logic [31:0] stage_5_out_3;
+     logic [31:0] stage_5_out_4;
+     logic [31:0] stage_5_out_5;
+     logic [31:0] stage_5_out_6;
+     logic [31:0] stage_5_out_7;
+     logic [31:0] stage_5_out_8;
+     logic [31:0] stage_5_out_9;
+     logic [31:0] stage_6_out_0;
+     logic [31:0] stage_6_out_1;
+     logic [31:0] stage_6_out_2;
+     logic [31:0] stage_6_out_3;
+     logic [31:0] stage_6_out_4;
+     logic [31:0] stage_6_out_5;
+     logic [31:0] stage_6_out_6;
+     logic [31:0] stage_6_out_7;
+     logic [31:0] stage_6_out_8;
+     logic [31:0] stage_6_out_9;
+     logic [31:0] stage_7_out_0;
+     logic [31:0] stage_7_out_1;
+     logic [31:0] stage_7_out_2;
+     logic [31:0] stage_7_out_3;
+     logic [31:0] stage_7_out_4;
+     logic [31:0] stage_7_out_5;
+     logic [31:0] stage_7_out_6;
+     logic [31:0] stage_7_out_7;
+     logic [31:0] stage_7_out_8;
+     logic [31:0] stage_7_out_9;
+    always_ff @(posedge clk) begin
+        if (data_0 <= data_8) begin
+            stage_0_out_0 <= data_0;
+            stage_0_out_8 <= data_8;
+        end else begin
+            stage_0_out_0 <= data_8;
+            stage_0_out_8 <= data_0;
+        end
+        if (data_1 <= data_9) begin
+            stage_0_out_1 <= data_1;
+            stage_0_out_9 <= data_9;
+        end else begin
+            stage_0_out_1 <= data_9;
+            stage_0_out_9 <= data_1;
+        end
+        if (data_2 <= data_7) begin
+            stage_0_out_2 <= data_2;
+            stage_0_out_7 <= data_7;
+        end else begin
+            stage_0_out_2 <= data_7;
+            stage_0_out_7 <= data_2;
+        end
+        if (data_3 <= data_5) begin
+            stage_0_out_3 <= data_3;
+            stage_0_out_5 <= data_5;
+        end else begin
+            stage_0_out_3 <= data_5;
+            stage_0_out_5 <= data_3;
+        end
+        if (data_4 <= data_6) begin
+            stage_0_out_4 <= data_4;
+            stage_0_out_6 <= data_6;
+        end else begin
+            stage_0_out_4 <= data_6;
+            stage_0_out_6 <= data_4;
+        end
+    end
+    always_ff @(posedge clk) begin
+        if (stage_0_out_0 <= stage_0_out_2) begin
+            stage_1_out_0 <= stage_0_out_0;
+            stage_1_out_2 <= stage_0_out_2;
+        end else begin
+            stage_1_out_0 <= stage_0_out_2;
+            stage_1_out_2 <= stage_0_out_0;
+        end
+        if (stage_0_out_1 <= stage_0_out_4) begin
+            stage_1_out_1 <= stage_0_out_1;
+            stage_1_out_4 <= stage_0_out_4;
+        end else begin
+            stage_1_out_1 <= stage_0_out_4;
+            stage_1_out_4 <= stage_0_out_1;
+        end
+        if (stage_0_out_5 <= stage_0_out_8) begin
+            stage_1_out_5 <= stage_0_out_5;
+            stage_1_out_8 <= stage_0_out_8;
+        end else begin
+            stage_1_out_5 <= stage_0_out_8;
+            stage_1_out_8 <= stage_0_out_5;
+        end
+        if (stage_0_out_7 <= stage_0_out_9) begin
+            stage_1_out_7 <= stage_0_out_7;
+            stage_1_out_9 <= stage_0_out_9;
+        end else begin
+            stage_1_out_7 <= stage_0_out_9;
+            stage_1_out_9 <= stage_0_out_7;
+        end
+        stage_1_out_3 <= stage_0_out_3;
+        stage_1_out_6 <= stage_0_out_6;
+    end
+    always_ff @(posedge clk) begin
+        if (stage_1_out_0 <= stage_1_out_3) begin
+            stage_2_out_0 <= stage_1_out_0;
+            stage_2_out_3 <= stage_1_out_3;
+        end else begin
+            stage_2_out_0 <= stage_1_out_3;
+            stage_2_out_3 <= stage_1_out_0;
+        end
+        if (stage_1_out_2 <= stage_1_out_4) begin
+            stage_2_out_2 <= stage_1_out_2;
+            stage_2_out_4 <= stage_1_out_4;
+        end else begin
+            stage_2_out_2 <= stage_1_out_4;
+            stage_2_out_4 <= stage_1_out_2;
+        end
+        if (stage_1_out_5 <= stage_1_out_7) begin
+            stage_2_out_5 <= stage_1_out_5;
+            stage_2_out_7 <= stage_1_out_7;
+        end else begin
+            stage_2_out_5 <= stage_1_out_7;
+            stage_2_out_7 <= stage_1_out_5;
+        end
+        if (stage_1_out_6 <= stage_1_out_9) begin
+            stage_2_out_6 <= stage_1_out_6;
+            stage_2_out_9 <= stage_1_out_9;
+        end else begin
+            stage_2_out_6 <= stage_1_out_9;
+            stage_2_out_9 <= stage_1_out_6;
+        end
+        stage_2_out_1 <= stage_1_out_1;
+        stage_2_out_8 <= stage_1_out_8;
+    end
+    always_ff @(posedge clk) begin
+        if (stage_2_out_0 <= stage_2_out_1) begin
+            stage_3_out_0 <= stage_2_out_0;
+            stage_3_out_1 <= stage_2_out_1;
+        end else begin
+            stage_3_out_0 <= stage_2_out_1;
+            stage_3_out_1 <= stage_2_out_0;
+        end
+        if (stage_2_out_3 <= stage_2_out_6) begin
+            stage_3_out_3 <= stage_2_out_3;
+            stage_3_out_6 <= stage_2_out_6;
+        end else begin
+            stage_3_out_3 <= stage_2_out_6;
+            stage_3_out_6 <= stage_2_out_3;
+        end
+        if (stage_2_out_8 <= stage_2_out_9) begin
+            stage_3_out_8 <= stage_2_out_8;
+            stage_3_out_9 <= stage_2_out_9;
+        end else begin
+            stage_3_out_8 <= stage_2_out_9;
+            stage_3_out_9 <= stage_2_out_8;
+        end
+        stage_3_out_2 <= stage_2_out_2;
+        stage_3_out_4 <= stage_2_out_4;
+        stage_3_out_5 <= stage_2_out_5;
+        stage_3_out_7 <= stage_2_out_7;
+    end
+    always_ff @(posedge clk) begin
+        if (stage_3_out_1 <= stage_3_out_5) begin
+            stage_4_out_1 <= stage_3_out_1;
+            stage_4_out_5 <= stage_3_out_5;
+        end else begin
+            stage_4_out_1 <= stage_3_out_5;
+            stage_4_out_5 <= stage_3_out_1;
+        end
+        if (stage_3_out_2 <= stage_3_out_3) begin
+            stage_4_out_2 <= stage_3_out_2;
+            stage_4_out_3 <= stage_3_out_3;
+        end else begin
+            stage_4_out_2 <= stage_3_out_3;
+            stage_4_out_3 <= stage_3_out_2;
+        end
+        if (stage_3_out_4 <= stage_3_out_8) begin
+            stage_4_out_4 <= stage_3_out_4;
+            stage_4_out_8 <= stage_3_out_8;
+        end else begin
+            stage_4_out_4 <= stage_3_out_8;
+            stage_4_out_8 <= stage_3_out_4;
+        end
+        if (stage_3_out_6 <= stage_3_out_7) begin
+            stage_4_out_6 <= stage_3_out_6;
+            stage_4_out_7 <= stage_3_out_7;
+        end else begin
+            stage_4_out_6 <= stage_3_out_7;
+            stage_4_out_7 <= stage_3_out_6;
+        end
+        stage_4_out_0 <= stage_3_out_0;
+        stage_4_out_9 <= stage_3_out_9;
+    end
+    always_ff @(posedge clk) begin
+        if (stage_4_out_1 <= stage_4_out_2) begin
+            stage_5_out_1 <= stage_4_out_1;
+            stage_5_out_2 <= stage_4_out_2;
+        end else begin
+            stage_5_out_1 <= stage_4_out_2;
+            stage_5_out_2 <= stage_4_out_1;
+        end
+        if (stage_4_out_3 <= stage_4_out_5) begin
+            stage_5_out_3 <= stage_4_out_3;
+            stage_5_out_5 <= stage_4_out_5;
+        end else begin
+            stage_5_out_3 <= stage_4_out_5;
+            stage_5_out_5 <= stage_4_out_3;
+        end
+        if (stage_4_out_4 <= stage_4_out_6) begin
+            stage_5_out_4 <= stage_4_out_4;
+            stage_5_out_6 <= stage_4_out_6;
+        end else begin
+            stage_5_out_4 <= stage_4_out_6;
+            stage_5_out_6 <= stage_4_out_4;
+        end
+        if (stage_4_out_7 <= stage_4_out_8) begin
+            stage_5_out_7 <= stage_4_out_7;
+            stage_5_out_8 <= stage_4_out_8;
+        end else begin
+            stage_5_out_7 <= stage_4_out_8;
+            stage_5_out_8 <= stage_4_out_7;
+        end
+        stage_5_out_0 <= stage_4_out_0;
+        stage_5_out_9 <= stage_4_out_9;
+    end
+    always_ff @(posedge clk) begin
+        if (stage_5_out_2 <= stage_5_out_3) begin
+            stage_6_out_2 <= stage_5_out_2;
+            stage_6_out_3 <= stage_5_out_3;
+        end else begin
+            stage_6_out_2 <= stage_5_out_3;
+            stage_6_out_3 <= stage_5_out_2;
+        end
+        if (stage_5_out_4 <= stage_5_out_5) begin
+            stage_6_out_4 <= stage_5_out_4;
+            stage_6_out_5 <= stage_5_out_5;
+        end else begin
+            stage_6_out_4 <= stage_5_out_5;
+            stage_6_out_5 <= stage_5_out_4;
+        end
+        if (stage_5_out_6 <= stage_5_out_7) begin
+            stage_6_out_6 <= stage_5_out_6;
+            stage_6_out_7 <= stage_5_out_7;
+        end else begin
+            stage_6_out_6 <= stage_5_out_7;
+            stage_6_out_7 <= stage_5_out_6;
+        end
+        stage_6_out_0 <= stage_5_out_0;
+        stage_6_out_1 <= stage_5_out_1;
+        stage_6_out_8 <= stage_5_out_8;
+        stage_6_out_9 <= stage_5_out_9;
+    end
+    always_ff @(posedge clk) begin
+        if (stage_6_out_3 <= stage_6_out_4) begin
+            stage_7_out_3 <= stage_6_out_3;
+            stage_7_out_4 <= stage_6_out_4;
+        end else begin
+            stage_7_out_3 <= stage_6_out_4;
+            stage_7_out_4 <= stage_6_out_3;
+        end
+        if (stage_6_out_5 <= stage_6_out_6) begin
+            stage_7_out_5 <= stage_6_out_5;
+            stage_7_out_6 <= stage_6_out_6;
+        end else begin
+            stage_7_out_5 <= stage_6_out_6;
+            stage_7_out_6 <= stage_6_out_5;
+        end
+        stage_7_out_0 <= stage_6_out_0;
+        stage_7_out_1 <= stage_6_out_1;
+        stage_7_out_2 <= stage_6_out_2;
+        stage_7_out_7 <= stage_6_out_7;
+        stage_7_out_8 <= stage_6_out_8;
+        stage_7_out_9 <= stage_6_out_9;
+    end
+    assign sort_0 = stage_7_out_0;
+    assign sort_1 = stage_7_out_1;
+    assign sort_2 = stage_7_out_2;
+    assign sort_3 = stage_7_out_3;
+    assign sort_4 = stage_7_out_4;
+    assign sort_5 = stage_7_out_5;
+    assign sort_6 = stage_7_out_6;
+    assign sort_7 = stage_7_out_7;
+    assign sort_8 = stage_7_out_8;
+    assign sort_9 = stage_7_out_9;
+endmodule
+
+module sort_10_29_8_tb;
+
+    logic clk;
+    data_t data_0;
+    data_t data_1;
+    data_t data_2;
+    data_t data_3;
+    data_t data_4;
+    data_t data_5;
+    data_t data_6;
+    data_t data_7;
+    data_t data_8;
+    data_t data_9;
+    data_t sort_0;
+    data_t sort_1;
+    data_t sort_2;
+    data_t sort_3;
+    data_t sort_4;
+    data_t sort_5;
+    data_t sort_6;
+    data_t sort_7;
+    data_t sort_8;
+    data_t sort_9;
+
+    // Clock generation
+    initial begin
+        clk = 0;
+        forever #5 clk = ~clk;
+    end
+
+    // Instantiate DUT
+    sort_10_29_8 dut (
+        .clk(clk),
+        .data_0(data_0),
+        .data_1(data_1),
+        .data_2(data_2),
+        .data_3(data_3),
+        .data_4(data_4),
+        .data_5(data_5),
+        .data_6(data_6),
+        .data_7(data_7),
+        .data_8(data_8),
+        .data_9(data_9),
+        .sort_0(sort_0),
+        .sort_1(sort_1),
+        .sort_2(sort_2),
+        .sort_3(sort_3),
+        .sort_4(sort_4),
+        .sort_5(sort_5),
+        .sort_6(sort_6),
+        .sort_7(sort_7),
+        .sort_8(sort_8),
+        .sort_9(sort_9)
+    );
+
+    // Apply random inputs
+    initial begin
+        repeat (100) begin
+            @(posedge clk);
+            data_0 = $urandom;
+            data_1 = $urandom;
+            data_2 = $urandom;
+            data_3 = $urandom;
+            data_4 = $urandom;
+            data_5 = $urandom;
+            data_6 = $urandom;
+            data_7 = $urandom;
+            data_8 = $urandom;
+            data_9 = $urandom;
+        end
+        #100 $finish;
+    end
+
+    // Verification logic
+    localparam int latency = 8;
+    integer cycle_count = 0;
+    integer success_count = 0;
+    integer failure_count = 0;
+    always @(posedge clk) begin
+        cycle_count <= cycle_count + 1;
+        if (cycle_count > latency) begin
+            if (sort_0 <= sort_1 && sort_1 <= sort_2 && sort_2 <= sort_3 && sort_3 <= sort_4 && sort_4 <= sort_5 && sort_5 <= sort_6 && sort_6 <= sort_7 && sort_7 <= sort_8 && sort_8 <= sort_9) begin
+                success_count <= success_count + 1;
+            end else begin
+                failure_count <= failure_count + 1;
+            end
+            $display("Cycle: %0d, Success: %0d, Failure: %0d", cycle_count, success_count, failure_count);
+        end
+    end
+
+endmodule

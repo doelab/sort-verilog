@@ -1,5 +1,6 @@
 typedef logic [31:0] data_t;
 
+
 module sort_47_340_19 (
     input logic clk,
     input data_t data_0,

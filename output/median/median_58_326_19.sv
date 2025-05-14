@@ -1,5 +1,7 @@
 typedef logic [31:0] data_t;
 
+// Network is vertically symmetric
+
 module median_58_326_19 (
     input logic clk,
     input data_t data_0,

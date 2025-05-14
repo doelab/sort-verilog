@@ -1,5 +1,6 @@
 typedef logic [31:0] data_t;
 
+
 module median_57_321_20 (
     input logic clk,
     input data_t data_0,

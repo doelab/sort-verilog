@@ -1,5 +1,7 @@
 typedef logic [31:0] data_t;
 
+// Network is vertically symmetric
+
 module sort_24_120_13 (
     input logic clk,
     input data_t data_0,

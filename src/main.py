@@ -47,6 +47,12 @@ def generate_systemverilog(data, pipeline_hex, data_type, width, module_name):
     nw = data['nw']
     d = data['D']
     is_symmetric = data.get('symmetric', False)
+    
+    # Extract additional metrics if available
+    avg_swaps = data.get('AVGSWAPS', None)
+    std_err = data.get('STDERR', None)
+    max_swaps = data.get('MAXSWAPS', None)
+    
     stages = group_comparisons(nw, d)
     
     if len(nw) != data['L']:
@@ -66,6 +72,17 @@ def generate_systemverilog(data, pipeline_hex, data_type, width, module_name):
 
     code = []
     code.append(f"typedef {data_t} data_t;\n")
+    
+    # Add metrics as comments if available
+    if avg_swaps is not None:
+        code.append(f"// Average swaps: {avg_swaps}")
+    if std_err is not None:
+        code.append(f"// Standard error: {std_err}")
+    if max_swaps is not None:
+        code.append(f"// Maximum swaps: {max_swaps}")
+    if is_symmetric:
+        code.append("// Network is vertically symmetric")
+    code.append("")
 
     # Sorting Network Module
     code.append(f"module {module_name} (")
@@ -203,7 +220,19 @@ def main():
         with open(args.file, 'r') as f:
             data = json.load(f)
         # Get module name from input file (without extension)
-        module_name = os.path.splitext(os.path.basename(args.file))[0].lower()
+        base_name = os.path.splitext(os.path.basename(args.file))[0].lower()
+        # Handle different filename formats:
+        # 1. Sort_LS_<N>_<L>_<D>_MAX<M>
+        # 2. Sort_LS_<N>_<L>_<D>
+        # 3. Sort_<N>_<L>_<D>
+        if base_name.startswith('sort_ls_'):
+            # Remove MAX<M> suffix if present
+            if '_max' in base_name:
+                module_name = base_name.split('_max')[0]
+            else:
+                module_name = base_name
+        else:
+            module_name = base_name
     else:
         data = json.load(sys.stdin)
         module_name = "sorting_network"  # Default name if reading from stdin

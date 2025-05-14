@@ -186,6 +186,7 @@ module sort_10_29_8 (
     assign stage_7_out_9 = stage_6_out_9;
     assign sort_0 = stage_7_out_0;
     assign sort_1 = stage_7_out_1;
+    assign sort_2 = stage_7_out_2;
     assign sort_3 = stage_7_out_3;
     assign sort_4 = stage_7_out_4;
     assign sort_5 = stage_7_out_5;

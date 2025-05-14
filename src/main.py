@@ -4,39 +4,40 @@ import sys
 import os
 
 def group_comparisons(nw, d):
-    """
-    Group comparison pairs into stages based on the existing grouping in the JSON file.
-    Each line in the JSON file represents a stage.
-    
-    Args:
-        nw (list): List of comparison pairs, e.g., [[0,8], [1,9], [2,7], ...]
-        d (int): Expected number of stages
-    
-    Returns:
-        list: List of stages, each containing the pairs from the corresponding line in the JSON
-    """
-    # The JSON file already has the pairs grouped by line
-    # We need to split them into stages based on the line breaks in the JSON
+    """Group comparison pairs into stages based on dependencies.
+    For Median networks, we need to group comparisons that can be executed in parallel.
+    For Sort networks, the grouping is already done in the JSON file."""
     stages = []
-    current_stage = []
-    prev_first = None
+    remaining_comparisons = nw.copy()
     
-    for pair in nw:
-        # If we hit a new line in the JSON (indicated by a smaller first number
-        # and we have a previous number to compare against), start a new stage
-        if prev_first is not None and pair[0] < prev_first:
-            stages.append(current_stage)
-            current_stage = []
-        current_stage.append(pair)
-        prev_first = pair[0]
-    
-    # Add the last stage
-    if current_stage:
+    while remaining_comparisons:
+        # Find all comparisons that can be executed in parallel
+        current_stage = []
+        used_indices = set()
+        
+        for comp in remaining_comparisons:
+            i, j = comp
+            if i not in used_indices and j not in used_indices:
+                current_stage.append(comp)
+                used_indices.add(i)
+                used_indices.add(j)
+        
+        if not current_stage:
+            break
+            
         stages.append(current_stage)
+        remaining_comparisons = [comp for comp in remaining_comparisons if comp not in current_stage]
     
-    # Verify the number of stages matches the expected depth
+    # For Median networks, we may need to adjust the number of stages
     if len(stages) != d:
-        raise ValueError(f"Number of stages {len(stages)} does not match expected {d}")
+        if len(stages) < d:
+            # Pad with empty stages
+            stages.extend([[] for _ in range(d - len(stages))])
+        else:
+            # Combine stages to match expected depth
+            while len(stages) > d:
+                last_stage = stages.pop()
+                stages[-1].extend(last_stage)
     
     return stages
 

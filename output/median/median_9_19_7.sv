@@ -140,11 +140,11 @@ module median_9_19_7 (
     assign stage_5_out_6 = stage_4_out_6;
     assign stage_5_out_7 = stage_4_out_7;
     assign stage_5_out_8 = stage_4_out_8;
+    assign stage_6_out_3 = (stage_5_out_3 <= stage_5_out_4) ? stage_5_out_3 : stage_5_out_4;
+    assign stage_6_out_4 = (stage_5_out_3 <= stage_5_out_4) ? stage_5_out_4 : stage_5_out_3;
     assign stage_6_out_0 = stage_5_out_0;
     assign stage_6_out_1 = stage_5_out_1;
     assign stage_6_out_2 = stage_5_out_2;
-    assign stage_6_out_3 = stage_5_out_3;
-    assign stage_6_out_4 = stage_5_out_4;
     assign stage_6_out_5 = stage_5_out_5;
     assign stage_6_out_6 = stage_5_out_6;
     assign stage_6_out_7 = stage_5_out_7;

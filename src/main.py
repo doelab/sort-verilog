@@ -2,42 +2,74 @@ import argparse
 import json
 import sys
 import os
+import re
 
-def group_comparisons(nw, d):
-    """Group comparison pairs into stages based on dependencies.
-    For Median networks, we need to group comparisons that can be executed in parallel.
-    For Sort networks, the grouping is already done in the JSON file."""
-    stages = []
-    remaining_comparisons = nw.copy()
-    
-    while remaining_comparisons:
-        # Find all comparisons that can be executed in parallel
+def load_json_with_stages(file_path):
+    """Load JSON file and parse 'nw' array, using stage_sizes if present, otherwise fall back to the improved heuristic."""
+    with open(file_path, 'r') as f:
+        data = json.load(f)
+    nw = data['nw']
+    d = data['D']
+
+    if 'stage_sizes' in data:
+        stage_sizes = data['stage_sizes']
+        if sum(stage_sizes) != len(nw):
+            raise ValueError(f"Sum of stage_sizes {sum(stage_sizes)} does not match number of comparisons {len(nw)}")
+        if len(stage_sizes) != d:
+            raise ValueError(f"Number of stages in stage_sizes {len(stage_sizes)} does not match expected {d}")
+        stages = []
+        current_idx = 0
+        for size in stage_sizes:
+            stage = nw[current_idx:current_idx + size]
+            stages.append(stage)
+            current_idx += size
+    else:
+        # Fallback: use the improved heuristic
+        stages = []
         current_stage = []
-        used_indices = set()
-        
-        for comp in remaining_comparisons:
-            i, j = comp
-            if i not in used_indices and j not in used_indices:
-                current_stage.append(comp)
-                used_indices.add(i)
-                used_indices.add(j)
-        
-        if not current_stage:
-            break
-            
-        stages.append(current_stage)
-        remaining_comparisons = [comp for comp in remaining_comparisons if comp not in current_stage]
+        prev_first = None
+        for pair in nw:
+            first_num = pair[0]
+            if prev_first is not None and first_num <= prev_first:
+                stages.append(current_stage)
+                current_stage = []
+            current_stage.append(pair)
+            prev_first = first_num
+        if current_stage:
+            stages.append(current_stage)
+        if len(stages) != d:
+            raise ValueError(f"Number of stages {len(stages)} does not match expected {d}")
+
+    data['nw_staged'] = stages
+    return data
+
+def group_comparisons(nw, d, nw_staged=None):
+    """Group comparison pairs into stages based on network structure.
+    If nw_staged is provided, use it directly.
+    Otherwise, use the 'first number decreases' heuristic to group stages.
+    """
+    if nw_staged is not None:
+        if len(nw_staged) != d:
+            raise ValueError(f"Number of stages in staged format ({len(nw_staged)}) does not match expected depth ({d})")
+        return nw_staged
+
+    # Use the 'first number decreases' heuristic
+    stages = []
+    current_stage = []
+    prev_first = None
     
-    # For Median networks, we may need to adjust the number of stages
+    for pair in nw:
+        if prev_first is not None and pair[0] < prev_first:
+            stages.append(current_stage)
+            current_stage = []
+        current_stage.append(pair)
+        prev_first = pair[0]
+    
+    if current_stage:
+        stages.append(current_stage)
+    
     if len(stages) != d:
-        if len(stages) < d:
-            # Pad with empty stages
-            stages.extend([[] for _ in range(d - len(stages))])
-        else:
-            # Combine stages to match expected depth
-            while len(stages) > d:
-                last_stage = stages.pop()
-                stages[-1].extend(last_stage)
+        raise ValueError(f"Number of stages ({len(stages)}) does not match expected depth ({d})")
     
     return stages
 
@@ -53,7 +85,7 @@ def generate_systemverilog(data, pipeline_hex, data_type, width, module_name):
     std_err = data.get('STDERR', None)
     max_swaps = data.get('MAXSWAPS', None)
     
-    stages = group_comparisons(nw, d)
+    stages = group_comparisons(nw, d, data.get('nw_staged', None))
     
     if len(nw) != data['L']:
         raise ValueError("Number of pairs in 'nw' does not match 'L'")
@@ -104,52 +136,31 @@ def generate_systemverilog(data, pipeline_hex, data_type, width, module_name):
     for i in range(d):
         inputs = [f"data_{j}" if i == 0 else f"stage_{i-1}_out_{j}" for j in range(n)]
         outputs = [f"stage_{i}_out_{j}" for j in range(n)]
-        
-        if is_symmetric and i >= d//2:
-            # For symmetric networks, mirror the first half stages
-            mirror_stage = d - 1 - i
-            for a, b in stages[mirror_stage]:
-                # Mirror the indices for the second half
-                a_mirror = n - 1 - a
-                b_mirror = n - 1 - b
-                if pipeline[i]:
-                    code.append(f"    always_ff @(posedge clk) begin")
-                    code.append(f"        if ({inputs[a_mirror]} <= {inputs[b_mirror]}) begin")
-                    code.append(f"            {outputs[a_mirror]} <= {inputs[a_mirror]};")
-                    code.append(f"            {outputs[b_mirror]} <= {inputs[b_mirror]};")
-                    code.append(f"        end else begin")
-                    code.append(f"            {outputs[a_mirror]} <= {inputs[b_mirror]};")
-                    code.append(f"            {outputs[b_mirror]} <= {inputs[a_mirror]};")
-                    code.append(f"        end")
-                    code.append("    end")
-                else:
-                    code.append(f"    assign {outputs[a_mirror]} = ({inputs[a_mirror]} <= {inputs[b_mirror]}) ? {inputs[a_mirror]} : {inputs[b_mirror]};")
-                    code.append(f"    assign {outputs[b_mirror]} = ({inputs[a_mirror]} <= {inputs[b_mirror]}) ? {inputs[b_mirror]} : {inputs[a_mirror]};")
-        else:
-            # Original stage generation
+        compared = set()
+        # Only use the pairs in this stage for assignments
+        for a, b in stages[i]:
+            compared.add(a)
+            compared.add(b)
             if pipeline[i]:
                 code.append(f"    always_ff @(posedge clk) begin")
-                for a, b in stages[i]:
-                    code.append(f"        if ({inputs[a]} <= {inputs[b]}) begin")
-                    code.append(f"            {outputs[a]} <= {inputs[a]};")
-                    code.append(f"            {outputs[b]} <= {inputs[b]};")
-                    code.append(f"        end else begin")
-                    code.append(f"            {outputs[a]} <= {inputs[b]};")
-                    code.append(f"            {outputs[b]} <= {inputs[a]};")
-                    code.append(f"        end")
-                compared = set(a for pair in stages[i] for a in pair)
-                for k in range(n):
-                    if k not in compared:
-                        code.append(f"        {outputs[k]} <= {inputs[k]};")
-                code.append("    end")
+                code.append(f"        if ({inputs[a]} <= {inputs[b]}) begin")
+                code.append(f"            {outputs[a]} <= {inputs[a]};")
+                code.append(f"            {outputs[b]} <= {inputs[b]};")
+                code.append(f"        end else begin")
+                code.append(f"            {outputs[a]} <= {inputs[b]};")
+                code.append(f"            {outputs[b]} <= {inputs[a]};")
+                code.append(f"        end")
+                code.append(f"    end")
             else:
-                for a, b in stages[i]:
-                    code.append(f"    assign {outputs[a]} = ({inputs[a]} <= {inputs[b]}) ? {inputs[a]} : {inputs[b]};")
-                    code.append(f"    assign {outputs[b]} = ({inputs[a]} <= {inputs[b]}) ? {inputs[b]} : {inputs[a]};")
-                compared = set(a for pair in stages[i] for a in pair)
-                for k in range(n):
-                    if k not in compared:
-                        code.append(f"    assign {outputs[k]} = {inputs[k]};")
+                code.append(f"    assign {outputs[a]} = ({inputs[a]} <= {inputs[b]}) ? {inputs[a]} : {inputs[b]};")
+                code.append(f"    assign {outputs[b]} = ({inputs[a]} <= {inputs[b]}) ? {inputs[b]} : {inputs[a]};")
+        # Passthrough for unused indices
+        for k in range(n):
+            if k not in compared:
+                if pipeline[i]:
+                    code.append(f"    always_ff @(posedge clk) begin {outputs[k]} <= {inputs[k]}; end")
+                else:
+                    code.append(f"    assign {outputs[k]} = {inputs[k]};")
 
     # Connect final stage to outputs
     for j in range(n):
@@ -217,8 +228,7 @@ def main():
     args = parser.parse_args()
 
     if args.file:
-        with open(args.file, 'r') as f:
-            data = json.load(f)
+        data = load_json_with_stages(args.file)
         # Get module name from input file (without extension)
         base_name = os.path.splitext(os.path.basename(args.file))[0].lower()
         # Handle different filename formats:

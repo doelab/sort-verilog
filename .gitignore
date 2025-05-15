@@ -4,6 +4,8 @@ Networks/
 # Ignore output directories
 output/
 output_fullpp/
+xcelium.d/
+xcelium/
 
 # Ignore OS generated files
 .DS_Store
@@ -13,6 +15,8 @@ output_fullpp/
 .Trashes
 ehthumbs.db
 Thumbs.db
+xrun.log
+xrun.history
 
 # Ignore Python
 __pycache__/
@@ -35,3 +39,5 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg 
+/output
+output/.DS_Store

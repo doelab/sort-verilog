@@ -26,10 +26,10 @@ module median_4_4_2 (
     assign stage_0_out_1 = (data_0 <= data_1) ? data_1 : data_0;
     assign stage_0_out_2 = (data_2 <= data_3) ? data_2 : data_3;
     assign stage_0_out_3 = (data_2 <= data_3) ? data_3 : data_2;
-    assign stage_1_out_3 = (stage_0_out_3 <= stage_0_out_2) ? stage_0_out_3 : stage_0_out_2;
-    assign stage_1_out_2 = (stage_0_out_3 <= stage_0_out_2) ? stage_0_out_2 : stage_0_out_3;
-    assign stage_1_out_1 = (stage_0_out_1 <= stage_0_out_0) ? stage_0_out_1 : stage_0_out_0;
-    assign stage_1_out_0 = (stage_0_out_1 <= stage_0_out_0) ? stage_0_out_0 : stage_0_out_1;
+    assign stage_1_out_0 = (stage_0_out_0 <= stage_0_out_2) ? stage_0_out_0 : stage_0_out_2;
+    assign stage_1_out_2 = (stage_0_out_0 <= stage_0_out_2) ? stage_0_out_2 : stage_0_out_0;
+    assign stage_1_out_1 = (stage_0_out_1 <= stage_0_out_3) ? stage_0_out_1 : stage_0_out_3;
+    assign stage_1_out_3 = (stage_0_out_1 <= stage_0_out_3) ? stage_0_out_3 : stage_0_out_1;
     assign sort_0 = stage_1_out_0;
     assign sort_1 = stage_1_out_1;
     assign sort_2 = stage_1_out_2;

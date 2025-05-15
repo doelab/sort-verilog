@@ -26,8 +26,8 @@ module median_3_3_3 (
     assign stage_1_out_1 = (stage_0_out_1 <= stage_0_out_2) ? stage_0_out_1 : stage_0_out_2;
     assign stage_1_out_2 = (stage_0_out_1 <= stage_0_out_2) ? stage_0_out_2 : stage_0_out_1;
     assign stage_1_out_0 = stage_0_out_0;
-    assign stage_2_out_0 = stage_1_out_0;
-    assign stage_2_out_1 = stage_1_out_1;
+    assign stage_2_out_0 = (stage_1_out_0 <= stage_1_out_1) ? stage_1_out_0 : stage_1_out_1;
+    assign stage_2_out_1 = (stage_1_out_0 <= stage_1_out_1) ? stage_1_out_1 : stage_1_out_0;
     assign stage_2_out_2 = stage_1_out_2;
     assign sort_0 = stage_2_out_0;
     assign sort_1 = stage_2_out_1;

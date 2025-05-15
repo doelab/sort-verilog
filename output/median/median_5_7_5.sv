@@ -60,11 +60,11 @@ module median_5_7_5 (
     assign stage_3_out_0 = stage_2_out_0;
     assign stage_3_out_3 = stage_2_out_3;
     assign stage_3_out_4 = stage_2_out_4;
+    assign stage_4_out_2 = (stage_3_out_2 <= stage_3_out_4) ? stage_3_out_2 : stage_3_out_4;
+    assign stage_4_out_4 = (stage_3_out_2 <= stage_3_out_4) ? stage_3_out_4 : stage_3_out_2;
     assign stage_4_out_0 = stage_3_out_0;
     assign stage_4_out_1 = stage_3_out_1;
-    assign stage_4_out_2 = stage_3_out_2;
     assign stage_4_out_3 = stage_3_out_3;
-    assign stage_4_out_4 = stage_3_out_4;
     assign sort_0 = stage_4_out_0;
     assign sort_1 = stage_4_out_1;
     assign sort_2 = stage_4_out_2;

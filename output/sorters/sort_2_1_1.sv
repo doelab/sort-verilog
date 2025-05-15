@@ -12,8 +12,8 @@ module sort_2_1_1 (
 
      logic [31:0] stage_0_out_0;
      logic [31:0] stage_0_out_1;
-    assign stage_0_out_1 = (data_1 <= data_0) ? data_1 : data_0;
-    assign stage_0_out_0 = (data_1 <= data_0) ? data_0 : data_1;
+    assign stage_0_out_0 = (data_0 <= data_1) ? data_0 : data_1;
+    assign stage_0_out_1 = (data_0 <= data_1) ? data_1 : data_0;
     assign sort_0 = stage_0_out_0;
     assign sort_1 = stage_0_out_1;
 endmodule
